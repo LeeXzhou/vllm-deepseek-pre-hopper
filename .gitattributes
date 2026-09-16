@@ -1,0 +1,3 @@
+# Normalize all text files to LF in repo and on checkout.
+# Shell scripts must stay LF or bash on Linux breaks with '\r' errors.
+* text=auto eol=lf
