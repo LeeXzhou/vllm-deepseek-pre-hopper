@@ -42,7 +42,7 @@ vLLM 0.26.0 的 overlay 补丁集：让 **DeepSeek-V4-Flash** 运行在 **pre-Ho
 
 | 数据 | 每步 decode 访问量 | 合适的位置 |
 |---|---|---|
-| 激活权重 | ~7.5 GB/卡，每步必读 | **HBM**（~800 GB/s；过 PCIe 需 375 ms/步，不可行） |
+| 激活权重 | ~11.5 GB 合计 ≈ 2.9 GB/卡，每步必读 | **HBM**（~800 GB/s；过 PCIe 需 ~145 ms/步，不可行） |
 | KV 选中行（indexer top-512 × 43 层） | **~15 MB/步** | **pinned 主机内存 + UVA 零拷贝**（PCIe ~20 GB/s ≈ 0.7 ms/步） |
 
 据此，`VLLM_DSV4_KV_CPU_GB=14` 开启的内存布局为：**权重全驻显存 + 整个 KV 池放 pinned 主机内存（14 GB/卡，4 卡共 56 GB）**，内核经 CUDA UVA 直接读写主机池（对 Triton 内核是普通指针，无 staging、无显式搬运）。实现组成：
